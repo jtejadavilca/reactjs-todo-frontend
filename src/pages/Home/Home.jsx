@@ -20,7 +20,7 @@ export const Home = () => {
 
 
 
-    const goToAddNote = () => {
+    const handleOpenAddEditNote = () => {
         setOpenAddEditNote({
                 isShown: true,
                 type: 'add',
@@ -50,7 +50,7 @@ export const Home = () => {
 
             <button
                 className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10"
-                onClick={goToAddNote}
+                onClick={handleOpenAddEditNote}
             >
                 <MdAdd className="text-[32px] text-white"  />
             </button>
@@ -59,15 +59,23 @@ export const Home = () => {
                 isOpen={openAddEditNote.isShown}
                 onRequestClose={() => {}}
                 // title={openAddEditNote.type === 'add' ? 'Add Note' : 'Edit Note'}
-                styles={{
+                style={{
                     overlay: {
                         backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    },
+                    content: {
+                        border: '1px',
                     }
                 }}
-                contentLabel=""
+                shouldCloseOnEsc={true}
+                contentLabel="Example modal..."
                 className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
             >
-                <AddEditNotes />
+                <AddEditNotes
+                    noteData={openAddEditNote.data}
+                    noteType={openAddEditNote.type}
+                    onClose={() => setOpenAddEditNote({ isShown: false, type: 'add', data: null })}
+                />
             </Modal>
         </>
     )
