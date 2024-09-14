@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, Login, SignUp } from '../pages';
+import { AddEditNotes, Home, Login, SignUp } from '../pages';
 
 export const routes = (
     <Router>
