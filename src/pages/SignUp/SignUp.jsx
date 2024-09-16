@@ -1,9 +1,17 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Navbar, PasswordInput } from '../../components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper';
+import { isThereToken } from '../../utils/tokenHandler';
 
 export const SignUp = () => {
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if(isThereToken()) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -56,8 +64,6 @@ export const SignUp = () => {
 
   return (
     <>
-        <Navbar />
-
         <div className="flex justify-center items-center h-screen">
             <div className="w-96 border rounded bg-white px-7 py-10">
                 <form onSubmit={handleSignUp}>

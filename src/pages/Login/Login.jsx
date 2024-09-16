@@ -1,13 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navbar, PasswordInput } from '../../components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper';
+import HttpClient from '../../http-client/httpClient';
+import { isThereToken } from '../../utils/tokenHandler';
 
 export const Login = () => {
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if(isThereToken()) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
+  
+
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -25,15 +37,17 @@ export const Login = () => {
 
     setError(null);
 
-    console.log({
-      email,
-      password
-    })
+    const httpClient = new HttpClient();
+    httpClient.post('/api/auth/login', { username: email, password })
+    .then((response) => {
+      const { token } = response;
+      localStorage.setItem('token', token);
+      navigate('/dashboard');
+    });
   }
 
   return (
     <>
-        <Navbar />
 
         <div className="flex justify-center items-center h-screen">
             <div className="w-96 border rounded bg-white px-7 py-10">

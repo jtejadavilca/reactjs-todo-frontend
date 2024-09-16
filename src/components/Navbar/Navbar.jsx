@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 import { ProfileInfo, SearchBar } from '../';
+import { isThereToken, removeToken } from '../../utils/tokenHandler';
 
 export const Navbar = () => {
 
@@ -9,8 +10,17 @@ export const Navbar = () => {
 
     const navigate = useNavigate();
 
-    const onLogout = () => {
+    
+    useEffect(() => {
+        if(!isThereToken()) {
+        navigate('/login');
+        }
+    }, [navigate]);
 
+    const onLogout = () => {
+        if(isThereToken()) {
+            removeToken();
+        }
         navigate('/login');
     }
 
