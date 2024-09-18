@@ -1,10 +1,12 @@
 // use AxiosClient
 import { BASE_URL } from '../utils/constants';
+import { getToken } from '../utils/tokenHandler';
 import AxiosClient from './impl/axiosClient';
 
-export default class HttpClient {
-    constructor() {
-        this.client = new AxiosClient(BASE_URL);
+class HttpClient {
+    constructor(loginPage, token) {
+        console.log('HttpClient token', {token});
+        this.client = new AxiosClient(BASE_URL, loginPage, token);
     }
 
     async get(url) {
@@ -23,3 +25,10 @@ export default class HttpClient {
         return this.client.delete(url);
     }
 }
+const httpClient = new HttpClient();
+const httpAuthClient = new HttpClient('/login', getToken());
+
+module.exports = {
+    httpClient,
+    httpAuthClient,
+};

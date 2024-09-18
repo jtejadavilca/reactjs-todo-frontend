@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { TagInput } from '../../components'
 import { MdClose } from 'react-icons/md';
 
@@ -14,6 +14,14 @@ export const AddEditNotes = ({
     const [tags, setTags] = useState([]);
 
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (noteType === 'edit') {
+            setTitle(noteData.title);
+            setContent(noteData.content);
+            setTags(noteData.tags);
+        }
+    }, [noteData, noteType]);
 
     // Add Note
     const addNewNote = async () => {};
@@ -74,7 +82,7 @@ export const AddEditNotes = ({
             )}
 
             <button className="btn-primary font-medium mt-5 p-3" onClick={handleAddNote}>
-                ADD NOTE
+                {noteType === 'add' ? 'ADD NOTE' : 'SAVE'}
             </button>
 
         </div>

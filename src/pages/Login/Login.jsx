@@ -3,13 +3,13 @@ import { Navbar, PasswordInput } from '../../components';
 import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper';
 import HttpClient from '../../http-client/httpClient';
-import { isThereToken } from '../../utils/tokenHandler';
+import { isThereValidToken } from '../../utils/tokenHandler';
 
 export const Login = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    if(isThereToken()) {
+    if(isThereValidToken()) {
       navigate('/dashboard');
     }
   }, [navigate]);
@@ -38,11 +38,16 @@ export const Login = () => {
     setError(null);
 
     const httpClient = new HttpClient();
+    
     httpClient.post('/api/auth/login', { username: email, password })
     .then((response) => {
+      console.log('LOGIN response', response);
       const { token } = response;
       localStorage.setItem('token', token);
       navigate('/dashboard');
+    }).catch((error) => {
+      console.log('LOGIN error', error);
+      setError('Invalid email or password');
     });
   }
 

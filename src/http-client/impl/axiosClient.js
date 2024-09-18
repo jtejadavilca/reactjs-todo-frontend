@@ -3,8 +3,25 @@ import axios from 'axios';
 
 export default class AxiosClient {
 
-    constructor(baseURL) {
+    constructor(baseURL, loginPage, token) {
         this.baseURL = baseURL;
+        console.log('axios token', {token});
+        if(token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+
+        if(loginPage) {
+            axios.interceptors.response.use(
+                response => response,
+                error => {
+                    if(error.response.status === 401) {
+                        window.location.href = loginPage;
+                        
+                    }
+                    return Promise.reject(error);
+                }
+            );
+        }
     }
 
     async get(url) {

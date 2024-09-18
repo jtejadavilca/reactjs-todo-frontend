@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Navbar, PasswordInput } from '../../components';
 import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper';
-import { isThereToken } from '../../utils/tokenHandler';
+import { isThereValidToken } from '../../utils/tokenHandler';
 
 export const SignUp = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    if(isThereToken()) {
+    if(isThereValidToken()) {
       navigate('/dashboard');
     }
   }, [navigate]);

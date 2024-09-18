@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal'; 
 import {
     Navbar,
@@ -7,6 +7,8 @@ import {
 
 import { MdAdd } from 'react-icons/md';
 import { AddEditNotes } from '../AddEditNotes/AddEditNotes';
+import notesService from '../../service/notes_service';
+import { getUserInfoFromToken } from '../../utils/tokenHandler';
 
 export const Home = () => {
 
@@ -16,41 +18,89 @@ export const Home = () => {
         data: null
     });
 
+    const [note, setNote] = useState({});
+    const [notes, setNotes] = useState([]);
+    const [userInfo, setUserInfo] = useState({});
+
+    
     Modal.setAppElement('#root');
 
 
+    const getUserInfo = () => {
+        setUserInfo(getUserInfoFromToken());
+    }
 
-    const handleOpenAddEditNote = () => {
+    const getNotes = () => {
+        console.log('notesService', notesService);
+        notesService.getNotes()
+            .then(({data}) => {
+                setNotes(data);
+            })
+            .catch((error) => {
+                console.log('error getNotes()',error);
+            });
+    }
+
+    const getNote = (noteId) => {
+        notesService.getNote(noteId)
+            .then(({data}) => {
+                setNote(data);
+                setOpenAddEditNote({
+                    isShown: true,
+                    type: 'edit',
+                    data
+                });
+            })
+            .catch((error) => {
+                console.log('error getNote()',error);
+            }
+        );
+    }
+
+    
+    useEffect(() => {
+        getUserInfo();
+        getNotes();
+    }, []);
+
+
+
+    const handleOpenAddNote = () => {
         setOpenAddEditNote({
                 isShown: true,
                 type: 'add',
-                data: null
+                data: note
             });
         
     }
 
     return (
         <>
-            <Navbar />
+            <Navbar userInfo={userInfo} />
 
             <div className="container mx-auto">
                 <div className='grid grid-cols-3 gap-4 mt-8'>
-                    <NoteCard
-                        title='Meeting on 7th April'
-                        date='3rd Apr 2024'
-                        content='Meeting with the team to discuss the project'
-                        tags={['work', 'meeting']}
-                        isPinned={true}
-                        onEdit={() => {}}
-                        onDelete={() => {}}
-                        onPinNote={() => {}}
-                    />
+                    {
+                        notes.map((note) => (
+                            <NoteCard
+                                key={note._id}
+                                title={note.title}
+                                date={note.createdAt}
+                                content={note.content}
+                                tags={note.tags}
+                                isPinned={note.isPinned}
+                                onEdit={() => getNote(note._id)}
+                                onDelete={() => {}}
+                                onPinNote={() => {}}
+                            />
+                        ))
+                    }
                 </div>
             </div>
 
             <button
                 className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10"
-                onClick={handleOpenAddEditNote}
+                onClick={handleOpenAddNote}
             >
                 <MdAdd className="text-[32px] text-white"  />
             </button>

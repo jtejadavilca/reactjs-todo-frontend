@@ -2,23 +2,22 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 import { ProfileInfo, SearchBar } from '../';
-import { isThereToken, removeToken } from '../../utils/tokenHandler';
+import { isThereValidToken, removeToken } from '../../utils/tokenHandler';
 
-export const Navbar = () => {
+export const Navbar = ({userInfo}) => {
 
     const [searchQuery, setSearchQuery] = useState('');
 
     const navigate = useNavigate();
 
-    
     useEffect(() => {
-        if(!isThereToken()) {
-        navigate('/login');
+        if(!isThereValidToken()) {
+            navigate('/login');
         }
     }, [navigate]);
 
     const onLogout = () => {
-        if(isThereToken()) {
+        if(isThereValidToken()) {
             removeToken();
         }
         navigate('/login');
@@ -40,7 +39,7 @@ export const Navbar = () => {
                 onClearSearch={() => setSearchQuery('')}
             />
 
-            <ProfileInfo onLogout={onLogout} />
+            <ProfileInfo onLogout={onLogout} userInfo={userInfo} />
         </div>
     )
 }
